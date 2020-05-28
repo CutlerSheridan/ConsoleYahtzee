@@ -1,0 +1,6 @@
+-function that prints the correct number of players without having to input?  That would
+stop us from needing FOUR Turn methods
+
+-problem i'm running into is that i could simply use one turn method and repeat it
+as needed instead of overloading it except for the "PrintScores" function, which has to take the
+appropriate amount of players 

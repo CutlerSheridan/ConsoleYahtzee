@@ -21,7 +21,8 @@ namespace Yahtzee
                 switch (value)
                 {
                     case 1:
-                        Pips = new string[] {"               ", 
+                        Pips = new string[] {
+                        "               ", 
                         "   —————————   ", 
                         "  |         |  ", 
                         "  |    O    |  ", 
@@ -29,7 +30,8 @@ namespace Yahtzee
                         "   —————————   "};
                         break;
                     case 2:
-                        Pips = new string[] {"               ", 
+                        Pips = new string[] {
+                        "               ", 
                         "   —————————   ", 
                         "  | O       |  ", 
                         "  |         |  ", 
@@ -37,7 +39,8 @@ namespace Yahtzee
                         "   —————————   "};
                         break;
                     case 3:
-                        Pips = new string[] {"               ", 
+                        Pips = new string[] {
+                        "               ", 
                         "   —————————   ", 
                         "  | O       |  ", 
                         "  |    O    |  ", 
@@ -45,7 +48,8 @@ namespace Yahtzee
                         "   —————————   "};
                         break;
                     case 4:
-                        Pips = new string[] {"               ", 
+                        Pips = new string[] {
+                        "               ", 
                         "   —————————   ", 
                         "  |  O   O  |  ", 
                         "  |         |  ", 
@@ -53,7 +57,8 @@ namespace Yahtzee
                         "   —————————   "};
                         break;
                     case 5:
-                        Pips = new string[] {"               ", 
+                        Pips = new string[] {
+                        "               ", 
                         "   —————————   ", 
                         "  | O     O |  ", 
                         "  |    O    |  ", 
@@ -61,7 +66,8 @@ namespace Yahtzee
                         "   —————————   "};
                         break;
                     case 6:
-                        Pips = new string[] {"               ", 
+                        Pips = new string[] {
+                        "               ", 
                         "   —————————   ", 
                         "  |  O   O  |  ", 
                         "  |  O   O  |  ", 

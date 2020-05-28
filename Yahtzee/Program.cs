@@ -6,63 +6,74 @@ namespace Yahtzee
     {
         static void Main(string[] args)
         {
-            while(true)
+            Console.Write("\nWelcome to Yahtzee!\n\nHow many players are there?  ");
+            int playerCount = Convert.ToInt32(Console.ReadLine());
+            Player p1;
+            Player p2;
+            Player p3;
+            Player p4;
+            if (playerCount == 1)
             {
-                Console.Write("\nWant to roll all the dice? (Type \"roll\"):  ");
-                string input = Console.ReadLine();
-                Console.WriteLine();
-                Dice dice = new Dice();
-                Player cutler = new Player("Cutler");
-                string[] player1Score = cutler.ScoreArray();
-                if (input.ToLower() == "roll")
-                {
-                    for (int i = 0; i < Game.scoreColumn1.Length; i++)
-                    {
-                        Console.Write(Game.scoreColumn1[i]);
-                        Console.WriteLine(player1Score[i]);
-                    }
-                    cutler.Ds.RollAll();
-                    cutler.Ds.PrintDice();
-                    cutler.Ds.Hold();
-                    cutler.Ds.Roll();
-                    cutler.Ds.PrintDice();
-                    cutler.Ds.Hold();
-                    cutler.Ds.Roll();
-                    cutler.Ds.PrintDice();
-                    
-                    Console.Write("Which numbers do you want to use in your score?  ");
-                    int choice = Convert.ToInt32(Console.ReadLine());
-                    cutler.ScoreUpper(choice);
-                    player1Score = cutler.ScoreArray();
-                    for (int i = 0; i < Game.scoreColumn1.Length; i++)
-                    {
-                        Console.Write(Game.scoreColumn1[i]);
-                        Console.WriteLine(player1Score[i]);
-                    }
-                    cutler.Ds.RollAll();
-                    cutler.Ds.PrintDice();
-                    cutler.Ds.Hold();
-                    cutler.Ds.Roll();
-                    cutler.Ds.PrintDice();
-                    cutler.Ds.Hold();
-                    cutler.Ds.Roll();
-                    cutler.Ds.PrintDice();
-                    Console.Write("Which numbers do you want to use in your score?  ");
-                    choice = Convert.ToInt32(Console.ReadLine());
-                    cutler.ScoreUpper(choice);
-                    player1Score = cutler.ScoreArray();
-                    for (int i = 0; i < Game.scoreColumn1.Length; i++)
-                    {
-                        Console.Write(Game.scoreColumn1[i]);
-                        Console.WriteLine(player1Score[i]);
-                    } 
-                }
-                else {break;}
-
-                // in reality we'll have a for loop where i < num of players
-                // ending when last person has gone
-                // Player will need property to keep track of num of turns
+                Console.Write("\nGreat.  What's your name?  ");
             }
+            else
+            {
+                Console.Write("\nGreat.  What is Player 1's name?  ");
+            }
+            p1 = new Player(Console.ReadLine());
+
+            if (playerCount >= 2)
+            {
+                Console.Write("\nWhat is Player 2's name?  ");
+                p2 = new Player(Console.ReadLine());
+                if (playerCount >= 3)
+                {
+                    Console.Write("\nWhat is Player 3's name?  ");
+                    p3 = new Player(Console.ReadLine());
+                    if (playerCount >= 4)
+                    {
+                        Console.Write("\nWhat is Player 4's name?  ");
+                        p4 = new Player(Console.ReadLine());
+                    }
+                    else
+                    {
+                        p4 = new Player("");
+                        Game.NumOfPlayers--;
+                    }
+                }
+                else
+                {
+                    p3 = new Player("");
+                    p4 = new Player("");
+                    Game.NumOfPlayers = 2;
+                }
+            }
+            else
+            {
+                p2 = new Player("");
+                p3 = new Player("");
+                p4 = new Player("");
+                Game.NumOfPlayers = 1;
+            }
+
+            for (int i = 0; i < 13; i++)
+            {
+                Game.Turn(p1, p2, p3, p4);
+            }
+            
+            switch (Game.NumOfPlayers)
+            {
+                case 1:
+                    Console.WriteLine("\nIT'S OVER!  Well done!  Hope you had a good time.");
+                    break;
+                case 2:
+                    Console.WriteLine($"\nIT'S OVER!  Good game everyone.  Looks like {(p1.GrandTotal > p2.GrandTotal ? p1.Name : p2.Name)} won.  Congrats!");
+                    break;
+                default:
+                    break;
+
+            }
+            // put in congrats message
         }
     }
 }

@@ -78,18 +78,21 @@ namespace Yahtzee
             Console.WriteLine("\n");
         }
 
-        public void Hold()
+        public void ResetDice()
         {
-            Console.Write("Which would you like to hold? (Type \"x y z\"):  ");
-            string input;
+            foreach (Die d in DiceArray)
+            {
+                d.Num = 1;
+            }
+        }
+
+        public void Hold(string selection)
+        {
+            string input = selection;
 
             // this whole while takes input and makes sure it doesn't fuck up
             while (true)
             {
-                // take input for which dice players want to hold
-                input = Console.ReadLine();
-                Console.WriteLine();
-
                 string[] inputTestStrings = input.Split(' ');
                 int[] inputTestInts = new int[inputTestStrings.Length];
                 for (int i = 0; i < inputTestStrings.Length; i++)
@@ -99,7 +102,8 @@ namespace Yahtzee
 
                 if (Array.Exists(inputTestInts, x => x > 6 || x < 0))
                 {
-                    Console.WriteLine("\nPlease only pick numbers 0 - 6");
+                    Console.Write("\nPlease only pick numbers 0 - 6.  ");
+                    input = Console.ReadLine();
                 }
                 else {break;}
             }

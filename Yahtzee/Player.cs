@@ -8,6 +8,7 @@ namespace Yahtzee
         public Player(string name)
         {
             Game.NumOfPlayers++;
+            PlayerNum = Game.NumOfPlayers;
             this.Name = name;
             InitUpperTotal = 0;
             UpperBonus = 0;
@@ -23,6 +24,9 @@ namespace Yahtzee
         {get; set;}
         public string Name
         {get; set;}
+
+        public int PlayerNum
+        {get; private set;}
 
         // Everything for upper section
         public int Aces
@@ -214,17 +218,24 @@ namespace Yahtzee
                     }
                     Chance = score;
                     break;
-                // for 14, make sure the "turn" method checks if it's a valid bonus
-                // since you can't put 0 for this category
                 case 14:
                     if (YahtzeeBonuses == -1)
                     {
                         YahtzeeBonuses = 0;
                     }
                     YahtzeeBonuses++;
-                    score = 100 * YahtzeeBonuses;
-                    LowerTotal -= YahtzeeBonus;
-                    YahtzeeBonus = score;
+                    if (Yahtzee != 0)
+                    {
+                        score = 100 * YahtzeeBonuses;
+                        LowerTotal -= YahtzeeBonus;
+                        YahtzeeBonus = score;
+                    }
+                    else
+                    {
+                        YahtzeeBonus = 0;
+                    }
+                    score = YahtzeeBonus;
+                    YahtzeeBonusReplacement();
                     break;
             }
             LowerTotal += score;
@@ -283,14 +294,14 @@ namespace Yahtzee
         {
             Array.Sort(Ds.DiceArray);
             int sequentials = 0;
-            for (int i = 0; i < Ds.DiceArray.Length; i++)
+            for (int i = 0; i < Ds.DiceArray.Length - 1; i++)
             {
                 if (Ds.DiceArray[i].Num == Ds.DiceArray[i + 1].Num - 1)
                 {
                     sequentials++;
                 }
             }
-            if (sequentials >= reqLength)
+            if (sequentials >= reqLength-1)
             {
                 return true;
             }
@@ -302,20 +313,176 @@ namespace Yahtzee
             upper section box with the total of all five dice.
             If that is not possible, fill in a lower section box, scoring as usual.
             If that is also impossible, enter a zero in any upper section box */
-            // this might require implementing an upperArray and lowerArray of scores
-            // to check for -1 (aka available boxes), which would mean undoing all the
-            // auto-implemented properties
+            int rollNum = Ds.DiceArray[0].Num;
+            if (IsUpperSpaceFree(rollNum))
+            {
+                ScoreUpper(rollNum);
+                Console.WriteLine("Filling in appropriate upper box and Yahtzee bonus, if applicable.");
+            }
+            else
+            {
+                int[] lowerArray = {ThreeOfAKind, FourOfAKind, FullHouse, SmallStraight, LargeStraight, 0, Chance};
+                if (Array.Exists(lowerArray, l => l == -1))
+                {
+                    Console.Write("Your appropriate upper spot has been used.  Which lower section box would you like to fill in?  ");
+                    int input = Convert.ToInt32(Console.ReadLine());
+                    while (input == 12 || input < 7 || input > 13)
+                    {
+                        Console.Write("Please select one of the empty lower section boxes.  ");
+                        input = Convert.ToInt32(Console.ReadLine());
+                    }
+                    ScoreLower(input);
+                }
+                else
+                {
+                    Console.Write("The appropriate upper spot and all lower sections have been used.  Which upper section box would you like to fill in?  ");
+                    int input = Convert.ToInt32(Console.ReadLine());
+                    while (input < 1 || input < 6)
+                    {
+                        Console.Write("Please select one of the empty upper section boxes.  ");
+                        input = Convert.ToInt32(Console.ReadLine());
+                    }
+                    ScoreUpper(input);
+                }
+            }
         }
-        // this prints out the player's score array to print alongside the score card
+        // check if applicable upper section box is empty
+        public bool IsUpperSpaceFree(int n)
+        {
+            switch (n)
+            {
+                case 1:
+                    if (Aces == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 2:
+                    if (Twos == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 3:
+                    if (Threes == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 4:
+                    if (Fours == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 5:
+                    if (Fives == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 6:
+                    if (Sixes == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                default:
+                    return false;
+            }
+            return false;
+        }
+        // checks if applicable space is free anywhere
+        public bool IsSpaceFree(int n)
+        {
+            switch (n)
+            {
+                case 1:
+                    if (Aces == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 2:
+                    if (Twos == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 3:
+                    if (Threes == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 4:
+                    if (Fours == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 5:
+                    if (Fives == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 6:
+                    if (Sixes == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 7:
+                    if (ThreeOfAKind == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 8:
+                    if (FourOfAKind == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 9:
+                    if (FullHouse == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 10:
+                    if (SmallStraight == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 11:
+                    if (LargeStraight == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 12:
+                    if (Yahtzee == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                case 13:
+                    if (Chance == -1)
+                    {
+                        return true;
+                    }
+                    break;
+                default:
+                    return false;
+            }
+            return false;
+        }
+        // this returns the player's score array to print alongside the score card
         public string[] ScoreArray()
         {
-            // we have to stringify these for certain scores to check length later
-            int[] intScores = {-1, -1, -1, Aces, Twos, Threes, Fours, Fives, Sixes, -1, InitUpperTotal, UpperBonus, FinalUpperTotal, -1, -1, -1, -1, ThreeOfAKind, FourOfAKind, FullHouse, SmallStraight, LargeStraight, Yahtzee, Chance, YahtzeeBonus, -1, LowerTotal, FinalUpperTotal, -1, GrandTotal, -1};
-            string[] stringScores = new string[intScores.Length];
-            for (int i = 0; i < intScores.Length; i++)
-            {
-                stringScores[i] = Convert.ToString(intScores[i]);
-            }
             // to use for substrings of spaces for different numbers of digits
             string spaces = "         |";
             string overscores = "‾‾‾‾‾‾‾‾‾|";
@@ -330,37 +497,37 @@ namespace Yahtzee
             }
 
             string[] scoreColumn = {"           ",
-            $"‾{(Name.Length > 7 ? Name.Substring(0, 7) : Name)}{overscores.Substring(nameSpaceIndex)}",
+            $"‾{(Name.Length > 7 ? Name.Substring(0, 7) + "‾|" : $"{Name}{overscores.Substring(nameSpaceIndex)}")}",
             "_________|",
             "         |",
-            $"{(Aces == -1 ? spaces : $" {Aces}       |")}",
-            $"{(Twos == -1 ? spaces : $" {Twos}{spaces.Substring(stringScores[5].Length + 1)}")}",
-            $"{(Threes == -1 ? spaces : $" {Threes}{spaces.Substring(stringScores[6].Length + 1)}")}",
-            $"{(Fours == -1 ? spaces : $" {Fours}{spaces.Substring(stringScores[7].Length + 1)}")}",
-            $"{(Fives == -1 ? spaces : $" {Fives}{spaces.Substring(stringScores[8].Length + 1)}")}",
-            $"{(Sixes == -1 ? spaces : $" {Sixes}{spaces.Substring(stringScores[9].Length + 1)}")}",
-            "—————————|",
-            $" {InitUpperTotal}{spaces.Substring(stringScores[11].Length + 1)}",
+            $"{(Aces == -1 ? spaces : String.Format(" {0,-8}|", Aces))}",
+            $"{(Twos == -1 ? spaces : String.Format(" {0,-8}|", Twos))}",
+            $"{(Threes == -1 ? spaces : String.Format(" {0,-8}|", Threes))}",
+            $"{(Fours == -1 ? spaces : String.Format(" {0,-8}|", Fours))}",
+            $"{(Fives == -1 ? spaces : String.Format(" {0,-8}|", Fives))}",
+            $"{(Sixes == -1 ? spaces : String.Format(" {0,-8}|", Sixes))}",
+            $"{(PlayerNum < Game.NumOfPlayers ? "——————————" : "—————————|")}",
+            String.Format(" {0,-8}|", InitUpperTotal),
             $"{(UpperBonus == 0 ? spaces : " 35      |")}",
-            $" {FinalUpperTotal}{spaces.Substring(stringScores[13].Length + 1)}",
+            String.Format(" {0,-8}|", FinalUpperTotal),
             "         |",
-            "‾‾‾‾‾‾‾‾‾|",
-            "_________|",
+            $"{(PlayerNum < Game.NumOfPlayers ? "‾‾‾‾‾‾‾‾‾‾" : "‾‾‾‾‾‾‾‾‾|")}",
+            $"{(PlayerNum < Game.NumOfPlayers ? "__________" : "_________|")}",
             "         |",
-            $"{(ThreeOfAKind == -1 ? spaces : $" {ThreeOfAKind}{spaces.Substring(stringScores[18].Length + 1)}")}",
-            $"{(FourOfAKind == -1 ? spaces : $" {FourOfAKind}{spaces.Substring(stringScores[19].Length + 1)}")}",
-            $"{(FullHouse == -1 ? spaces : $" {FullHouse}{spaces.Substring(stringScores[20].Length + 1)}")}",
-            $"{(SmallStraight == -1 ? spaces : $" {SmallStraight}{spaces.Substring(stringScores[21].Length + 1)}")}",
-            $"{(LargeStraight == -1 ? spaces : $" {LargeStraight}{spaces.Substring(stringScores[22].Length + 1)}")}",
-            $"{(Yahtzee == -1 ? spaces : $" {Yahtzee}{spaces.Substring(stringScores[23].Length + 1)}")}",
-            $"{(Chance == -1 ? spaces : $" {Chance}{spaces.Substring(stringScores[24].Length + 1)}")}",
+            $"{(ThreeOfAKind == -1 ? spaces : String.Format(" {0,-8}|", ThreeOfAKind))}",
+            $"{(FourOfAKind == -1 ? spaces : String.Format(" {0,-8}|", FourOfAKind))}",
+            $"{(FullHouse == -1 ? spaces : String.Format(" {0,-8}|", FullHouse))}",
+            $"{(SmallStraight == -1 ? spaces : String.Format(" {0,-8}|", SmallStraight))}",
+            $"{(LargeStraight == -1 ? spaces : String.Format(" {0,-8}|", LargeStraight))}",
+            $"{(Yahtzee == -1 ? spaces : String.Format(" {0,-8}|", Yahtzee))}",
+            $"{(Chance == -1 ? spaces : String.Format(" {0,-8}|", Chance))}",
             $"{(YahtzeeBonuses == -1 ? spaces : $" ({YahtzeeBonuses}) {YahtzeeBonus} |")}",
-            "—————————|",
-            $" {LowerTotal}{spaces.Substring(stringScores[27].Length + 1)}",
-            $" {FinalUpperTotal}{spaces.Substring(stringScores[28].Length + 1)}",
-            "—————————|",
-            $" {GrandTotal}{spaces.Substring(stringScores[30].Length + 1)}",
-            "—————————|"};
+            $"{(PlayerNum < Game.NumOfPlayers ? "——————————" : "—————————|")}",
+            String.Format(" {0,-8}|", LowerTotal),
+            String.Format(" {0,-8}|", FinalUpperTotal),
+            $"{(PlayerNum < Game.NumOfPlayers ? "——————————" : "—————————|")}",
+            String.Format(" {0,-8}|", GrandTotal),
+            $"{(PlayerNum < Game.NumOfPlayers ? "——————————" : "————————— ")}"};
 
             return scoreColumn;
         }
