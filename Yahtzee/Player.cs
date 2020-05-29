@@ -118,9 +118,6 @@ namespace Yahtzee
         {get; set;}
 
         // METHODS
-        // in the "turn" method there will be a loop to see if they're using something
-        // in the upper or lower section
-        // that method will also make sure the input is valid
         public void ScoreUpper(int choice)
         {
             int score = 0;
@@ -164,7 +161,7 @@ namespace Yahtzee
             switch (choice)
             {
                 case 7:
-                    if (HasDupes(3))
+                    if (HasDupes(3) || HasDupes(4) || HasDupes(5))
                     {
                         for (int i = 0; i < Ds.DiceArray.Length; i++)
                         {
@@ -174,7 +171,7 @@ namespace Yahtzee
                     ThreeOfAKind = score;
                     break;
                 case 8:
-                    if (HasDupes(4))
+                    if (HasDupes(4) || HasDupes(5))
                     {
                         for (int i = 0; i < Ds.DiceArray.Length; i++)
                         {
@@ -245,15 +242,15 @@ namespace Yahtzee
         {
             for (int i = 0; i < Ds.DiceArray.Length; i++)
             {
-                int counter = 1;
-                for (int j = i + 1; j < Ds.DiceArray.Length; j++)
+                int counter = 0;
+                for (int j = 0; j < Ds.DiceArray.Length; j++)
                 {
                     if (Ds.DiceArray[i].Num == Ds.DiceArray[j].Num)
                     {
                         counter++;
                     }
                 }
-                if (counter >= howMany)
+                if (counter == howMany)
                 {
                     return true;
                 }
@@ -263,32 +260,14 @@ namespace Yahtzee
 
         public bool IsFullHouse()
         {
-            bool doubles = false;
-            bool triples = false;
-            for (int i = 0; i < Ds.DiceArray.Length; i++)
-            {
-                int counter = 1;
-                for (int j = i + 1; j < Ds.DiceArray.Length; j++)
-                {
-                    if (Ds.DiceArray[i].Num == Ds.DiceArray[j].Num)
-                    {
-                        counter++;
-                    }
-                }
-                if (counter == 2)
-                {
-                    doubles = true;
-                }
-                if (counter == 3)
-                {
-                    triples = true;
-                }
-            }
-            if (doubles && triples)
+            if (HasDupes(3) && HasDupes(2))
             {
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
         public bool IsStraight(int reqLength)
         {
@@ -314,7 +293,7 @@ namespace Yahtzee
             If that is not possible, fill in a lower section box, scoring as usual.
             If that is also impossible, enter a zero in any upper section box */
             int rollNum = Ds.DiceArray[0].Num;
-            if (IsUpperSpaceFree(rollNum))
+            if (IsSpaceFree(rollNum))
             {
                 ScoreUpper(rollNum);
                 Console.WriteLine("Filling in appropriate upper box and Yahtzee bonus, if applicable.");
@@ -345,52 +324,6 @@ namespace Yahtzee
                     ScoreUpper(input);
                 }
             }
-        }
-        // check if applicable upper section box is empty
-        public bool IsUpperSpaceFree(int n)
-        {
-            switch (n)
-            {
-                case 1:
-                    if (Aces == -1)
-                    {
-                        return true;
-                    }
-                    break;
-                case 2:
-                    if (Twos == -1)
-                    {
-                        return true;
-                    }
-                    break;
-                case 3:
-                    if (Threes == -1)
-                    {
-                        return true;
-                    }
-                    break;
-                case 4:
-                    if (Fours == -1)
-                    {
-                        return true;
-                    }
-                    break;
-                case 5:
-                    if (Fives == -1)
-                    {
-                        return true;
-                    }
-                    break;
-                case 6:
-                    if (Sixes == -1)
-                    {
-                        return true;
-                    }
-                    break;
-                default:
-                    return false;
-            }
-            return false;
         }
         // checks if applicable space is free anywhere
         public bool IsSpaceFree(int n)
@@ -530,10 +463,6 @@ namespace Yahtzee
             $"{(PlayerNum < Game.NumOfPlayers ? "——————————" : "————————— ")}"};
 
             return scoreColumn;
-        }
-        public void PrintScores()
-        {
-            Console.WriteLine();
         }
     }
 }

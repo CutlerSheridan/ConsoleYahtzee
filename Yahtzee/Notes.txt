@@ -1,0 +1,121 @@
+Currently:  1,110 lines of code
+
+This was the code I used to test the randomization
+(which saved me from doing HasDupes wrong!)
+
+            int a1 = 0;
+            int a2 = 0;
+            int a3 = 0;
+            int a4 = 0;
+            int a5 = 0;
+            int a6 = 0;
+            int aF = 0;
+            int aS = 0;
+            int aY = 0;
+
+            int b1 = 0;
+            int b2 = 0;
+            int b3 = 0;
+            int b4 = 0;
+            int b5 = 0;
+            int b6 = 0;
+            int bF = 0;
+            int bS = 0;
+            int bY = 0;
+
+            int c1 = 0;
+            int c2 = 0;
+            int c3 = 0;
+            int c4 = 0;
+            int c5 = 0;
+            int c6 = 0;
+            int cF = 0;
+            int cS = 0;
+            int cY = 0;
+
+            int d1 = 0;
+            int d2 = 0;
+            int d3 = 0;
+            int d4 = 0;
+            int d5 = 0;
+            int d6 = 0;
+            int dF = 0;
+            int dS = 0;
+            int dY = 0;
+
+            int[] ar1 = {a1, b1, c1, d1};
+            int[] ar2 = {a2, b2, c2, d2};
+            int[] ar3 = {a3, b3, c3, d3};
+            int[] ar4 = {a4, b4, c4, d4};
+            int[] ar5 = {a5, b5, c5, d5};
+            int[] ar6 = {a6, b6, c6, d6};
+            int[] arF = {aF, bF, cF, dF};
+            int[] arS = {aS, bS, cS, dS};
+            int[] arY = {aY, bY, cY, dY};
+
+            Player[] playersArray = {p1, p2, p3, p4};
+
+            for (int i = 0; i < 7776; i++)
+            {
+                for (int p = 0; p < 4; p++)
+                {
+                    playersArray[p].Ds.RollAll();
+                    foreach (Die d in playersArray[p].Ds.DiceArray)
+                    {
+                        switch (d.Num)
+                        {
+                            case 1:
+                                ar1[p]++;
+                                break;
+                            case 2:
+                                ar2[p]++;
+                                break;
+                            case 3:
+                                ar3[p]++;
+                                break;
+                            case 4:
+                                ar4[p]++;
+                                break;
+                            case 5:
+                                ar5[p]++;
+                                break;
+                            case 6:
+                                ar6[p]++;
+                                break;
+                        }
+                    }
+                    if (playersArray[p].IsFullHouse())
+                    {
+                        arF[p]++;
+                    }
+                    if (playersArray[p].IsStraight(5))
+                    {
+                        arS[p]++;
+                    }
+                    if (playersArray[p].HasDupes(5))
+                    {
+                        arY[p]++;
+                    }
+                }
+            }
+
+            string[] column = {
+                "\n Tester:  | Player 1 | Player 2 | Player 3 | Player 4 ",
+                "                                                      ",
+                $" Ones:    | {ar1[0]}     | {ar1[1]}     | {ar1[2]}     | {ar1[3]}     ",
+                $" Twos:    | {ar2[0]}     | {ar2[1]}     | {ar2[2]}     | {ar2[3]}     ",
+                $" Threes:  | {ar3[0]}     | {ar3[1]}     | {ar3[2]}     | {ar3[3]}     ",
+                $" Fours:   | {ar4[0]}     | {ar4[1]}     | {ar4[2]}     | {ar4[3]}     ",
+                $" Fives:   | {ar5[0]}     | {ar5[1]}     | {ar5[2]}     | {ar5[3]}     ",
+                $" Sixes:   | {ar6[0]}     | {ar6[1]}     | {ar6[2]}     | {ar6[3]}     ",
+                "                                                      ",
+                $" Full H.  | {arF[0]}      | {arF[1]}      | {arF[2]}      | {arF[3]}     ",
+                $" Straights| {arS[0]}      | {arS[1]}      | {arS[2]}      | {arS[3]}     ",
+                $" Yahtzees | {String.Format("{0,-9}", arY[0])}| {String.Format("{0,-9}", arY[1])}| {String.Format("{0,-9}", arY[2])}| {String.Format("{0,-9}", arY[3])}"
+            };
+
+            for (int i = 0; i < column.Length; i++)
+            {
+                Console.WriteLine(column[i]);
+            }
+            Console.WriteLine();

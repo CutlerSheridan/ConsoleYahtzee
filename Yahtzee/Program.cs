@@ -6,7 +6,8 @@ namespace Yahtzee
     {
         static void Main(string[] args)
         {
-            Console.Write("\nWelcome to Yahtzee!\n\nHow many players are there?  ");
+            // here the game greets the player/s and determines how many players there are
+            Console.Write("\nWelcome to Yahtzee!\n\nHow many players are there?  (Up to four)  ");
             int playerCount = Convert.ToInt32(Console.ReadLine());
             Player p1;
             Player p2;
@@ -24,15 +25,15 @@ namespace Yahtzee
 
             if (playerCount >= 2)
             {
-                Console.Write("\nWhat is Player 2's name?  ");
+                Console.Write("\nAnd Player 2's name?  ");
                 p2 = new Player(Console.ReadLine());
                 if (playerCount >= 3)
                 {
-                    Console.Write("\nWhat is Player 3's name?  ");
+                    Console.Write("\nPlayer 3's?  ");
                     p3 = new Player(Console.ReadLine());
                     if (playerCount >= 4)
                     {
-                        Console.Write("\nWhat is Player 4's name?  ");
+                        Console.Write("\nPlayer 4's?  ");
                         p4 = new Player(Console.ReadLine());
                     }
                     else
@@ -56,24 +57,24 @@ namespace Yahtzee
                 Game.NumOfPlayers = 1;
             }
 
+            // this is where the game actually runs for the most part
             for (int i = 0; i < 13; i++)
             {
                 Game.Turn(p1, p2, p3, p4);
             }
-            
-            switch (Game.NumOfPlayers)
-            {
-                case 1:
-                    Console.WriteLine("\nIT'S OVER!  Well done!  Hope you had a good time.");
-                    break;
-                case 2:
-                    Console.WriteLine($"\nIT'S OVER!  Good game everyone.  Looks like {(p1.GrandTotal > p2.GrandTotal ? p1.Name : p2.Name)} won.  Congrats!");
-                    break;
-                default:
-                    break;
 
+            // Calculate and declare the winner
+            if (Game.NumOfPlayers == 1)
+            {
+                Console.WriteLine("\nIT'S OVER!  Well done.  \nHope you had a good time!\n");
             }
-            // put in congrats message
+            else
+            {
+                int[] finalScoresArray = {p1.GrandTotal, p2.GrandTotal, p3.GrandTotal, p4.GrandTotal};
+                Player[] playersArray = {p1, p2, p3, p4};
+                Array.Sort(finalScoresArray, playersArray);
+                Console.WriteLine($"\nIT'S OVER!  Good game everyone.  \nLooks like {playersArray[3].Name} is the winner!  Congratulations!\n");
+            }
         }
     }
 }
